@@ -49,16 +49,21 @@ async function run() {
             res.json(result)
         })
         // GET MYORDERS
-        app.get("/order/:email", async (req, res) => {
-            const email = req.params.email;
-            const query = { email: email };
-            const myOrders = await orderCollection.find(query).toArray();
-            res.json(myOrders)
+        app.get("/order/:email", async(req, res) => {
+            const emailid = req.params.email;
+            const query ={ email: emailid };
+            // console.log(query);
+            // console.log(orderCollection);
+            const myOrders = orderCollection.find(query);
+            const result = await myOrders.toArray();
+            console.log(result)
+            res.json(result)
         })
         // GET ALL ORDERS 
         app.get("/orders", async (req, res) => {
             const cursor = orderCollection.find({})
             const result = await cursor.toArray();
+            console.log(result);
             res.json(result);
         })
         // DELETE SINGLE BOOKING DATA
