@@ -42,6 +42,13 @@ async function run() {
             const result = await cursor.toArray()
             res.json(result);
         })
+        // GET SINGLE PRODUCT DATA
+        app.get("/products/:id", async(req,res) => {
+            const pdId = req.params.id;
+            const query = {_id: ObjectId(pdId)};
+            const result = await productCollection.findOne(query);
+            res.json(result)
+        })
         // PUT ORDER DETAILS
         app.post("/order", async (req, res) => {
             const doc = req.body;
@@ -49,11 +56,9 @@ async function run() {
             res.json(result)
         })
         // GET MYORDERS
-        app.get("/order/:email", async(req, res) => {
+        app.get("/order/:email", async (req, res) => {
             const emailid = req.params.email;
-            const query ={ email: emailid };
-            // console.log(query);
-            // console.log(orderCollection);
+            const query = { email: emailid };
             const myOrders = orderCollection.find(query);
             const result = await myOrders.toArray();
             console.log(result)
@@ -63,10 +68,41 @@ async function run() {
         app.get("/orders", async (req, res) => {
             const cursor = orderCollection.find({})
             const result = await cursor.toArray();
-            console.log(result);
             res.json(result);
         })
-        // DELETE SINGLE BOOKING DATA
+        // UPDATE A SINGLE PRODUCT DETAILS
+        app.patch("/products/:id", async(req, res) => {
+            const id = req.params.id;
+            const updateProduct = req.body;
+            const filter = {_id: ObjectId(id)};
+            const options = {upsert: true};
+            const updateDoc = {
+                $set: {
+                    name: updateProduct.name,
+                    img: updateProduct.img,
+                    price: updateProduct.price,
+                    category: updateProduct.category,
+                    about: updateProduct.about
+                }
+            };
+            const result = await productCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        })
+        // UPDATE SINGLE ORDER DETAILS API
+        app.patch('/order/:id', async (req, res) => {
+            const id = req.params.id;
+            const updateOrder = req.body;
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: updateOrder.status
+                },
+            };
+            const result = await orderCollection.updateOne(filter, updateDoc, options)
+            res.json(result)
+        })
+        // DELETE SINGLE ORDER DATA
         app.delete('/deleteOrder/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
