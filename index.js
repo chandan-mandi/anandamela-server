@@ -70,7 +70,12 @@ async function run() {
             const result = await cursor.toArray();
             res.json(result);
         })
-        // UPDATE A SINGLE PRODUCT DETAILS
+        app.get("/customer", async (req, res) => {
+            const cursor = orderCollection.find({})
+            const result = await cursor.toArray();
+            res.json(result);
+        })
+        // UPDATE A SINGLE PRODUCT DETAILS by Chandan
         app.patch("/products/:id", async(req, res) => {
             const id = req.params.id;
             const updateProduct = req.body;
